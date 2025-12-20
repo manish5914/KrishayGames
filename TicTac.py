@@ -1,3 +1,4 @@
+import Labels
 
 board_height = 3
 board_width = 3
@@ -33,13 +34,13 @@ def render(board):
     print("  0 1 2")
     print("  ------")
     for row in rows:
-        output_row = '' 
+        output_row = ""
         for sq in row:
             if sq is None:
-                output_row += ' '
+                output_row += " "
             else:
                 output_row += str(sq)
-        print("%d|%s|" % (row_num, ' '.join(output_row)))
+        print("%d|%s|" % (row_num, " ".join(output_row)))
         row_num += 1
     print("  ------")
 
@@ -55,7 +56,6 @@ def get_move():
 
 def is_valid_move(board, position):
     if position[0] < 0 or position[0] >= board_width:
-        
         return False
     if position[1] < 0 or position[1] >= board_height:
         return False
@@ -64,9 +64,8 @@ def is_valid_move(board, position):
     return True
 
 
-
 def make_move(board, position, player):
-    if is_valid_move(board, position) == False:
+    if not is_valid_move(board, position):
         raise Exception("Invalid move: ")
     board[position[0]][position[1]] = player
 
@@ -86,24 +85,21 @@ def get_all_lines():
             row.append([x, y])
         rows.append(row)
 
-    diagonals = [
-        [[0, 0], [1, 1], [2, 2]],
-        [[0, 2], [1, 1], [2, 0]]
-    ]
-    return cols + rows+ diagonals
+    diagonals = [[[0, 0], [1, 1], [2, 2]], [[0, 2], [1, 1], [2, 0]]]
+    return cols + rows + diagonals
 
 
 def get_winner(board):
     all_lines = get_all_lines()
     for line in all_lines:
-       line_values = [board[x][y] for [x,y] in line]
-       if len(set(line_values)) == 1 and line_values[0] is not None:
-              return line_values[0]
+        line_values = [board[x][y] for [x, y] in line]
+        if len(set(line_values)) == 1 and line_values[0] is not None:
+            return line_values[0]
     return None
-    
+
 
 def play():
-    players = ['X','O']
+    players = ["X", "O"]
     board = new_board()
     turn = 0
 
@@ -111,9 +107,13 @@ def play():
         current_player = players[turn % 2]
         render(board)
 
-        move_coords = get_move()
-        if not is_valid_move(board, move_coords):
-            print("Invalid move, try again.")
+        try:
+            move_coords = get_move()
+            if not is_valid_move(board, move_coords):
+                print("Invalid move, try again.")
+                continue
+        except Exception:
+            print(Labels.INVALID_INPUT_MESSAGE)
             continue
 
         make_move(board, move_coords, current_player)
@@ -128,12 +128,7 @@ def play():
             print("It's a tie!")
             break
 
-        turn +=1
+        turn += 1
 
-    
-  
 
 play()
-
-
-
